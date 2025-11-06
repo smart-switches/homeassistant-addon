@@ -1,0 +1,41 @@
+{
+  "name": "smart-switches",
+  "version": "1.0.0",
+  "private": true,
+  "description": "smart-switches",
+  "author": "lucaspopp0",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "develop": "gatsby develop -p 7128",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.6.1",
+    "antd": "^5.25.0",
+    "bootstrap": "^5.3.5",
+    "dotenv": "^16.5.0",
+    "gatsby": "^5.14.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.10.9",
+    "react-dom": "^18.2.0",
+    "uniforms": "^4.0.0",
+    "uniforms-antd": "^4.0.0",
+    "uniforms-bridge-json-schema": "^4.0.0",
+    "uniforms-bridge-zod": "^4.0.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "typescript": "^5.3.3"
+  },
+  "target": "node",
+  "workspaces": ["src/api"]
+}

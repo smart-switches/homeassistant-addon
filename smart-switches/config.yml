@@ -1,0 +1,36 @@
+version: "1.4.9"
+name: "Smart Switches"
+description: "Configure smart switches in your home"
+slug: "smart-switches"
+url: "https://github.com/lucaspopp0/ha-smart-switches/blob/main/smart-switches"
+# image: ghcr.io/lucaspopp0/smart-switches
+arch:
+  - aarch64
+  - amd64
+  # - armhf
+  - armv7
+  - i386
+startup: application
+init: false
+hassio_api: true
+homeassistant_api: true
+hassio_role: manager
+host_dbus: true
+privileged:
+  - NET_ADMIN
+  - NET_RAW
+devices:
+  - vhci
+# Ingress configuration
+# panel_title: 'Smart Switches'
+# panel_icon: 'mdi:light-switch'
+# panel_admin: false
+# ingress: true
+# ingress_port: 8124
+# ingress_stream: true
+# ingress_path: /
+# 
+# Direct network configuration
+ports:
+  8124/tcp: 8124
+webui: http://[HOST]:[PORT:8124]

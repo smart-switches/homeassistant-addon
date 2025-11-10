@@ -1,3 +1,3 @@
-# v0.0.3
- * [`53c1f3b`](https://github.com/smart-switches/homeassistant-addon/commit/53c1f3b) [bot] v0.0.3
+# v0.0.4
+ * [`7a08755`](https://github.com/smart-switches/homeassistant-addon/commit/7a08755) [bot] v0.0.3
 

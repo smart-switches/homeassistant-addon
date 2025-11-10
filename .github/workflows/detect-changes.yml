@@ -39,7 +39,7 @@ jobs:
         name: Detect bot
         id: detect-bot
         run: |
-          echo "detected=${{ github.actor == 'lucaspopp0-bot[bot]' }}" | tee -a "$GITHUB_OUTPUT"
+          echo "detected=${{ contains(github.actor, '[bot]') }}" | tee -a "$GITHUB_OUTPUT"
       -
         uses: actions/checkout@v5
       -

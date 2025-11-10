@@ -1,3 +1,3 @@
-# v0.0.6
- * [`a2a403f`](https://github.com/smart-switches/homeassistant-addon/commit/a2a403f) [bot] v0.0.5
+# v0.0.7
+ * [`5f4c63f`](https://github.com/smart-switches/homeassistant-addon/commit/5f4c63f) bot detection
 

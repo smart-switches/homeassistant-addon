@@ -1,3 +1,3 @@
 # v0.0.3
- * [`4700746`](https://github.com/smart-switches/homeassistant-addon/commit/4700746) secrets fix
+ * [`53c1f3b`](https://github.com/smart-switches/homeassistant-addon/commit/53c1f3b) [bot] v0.0.3
 

@@ -12,25 +12,21 @@ tidy-server:
 .PHONY: tidy-server
 
 build-server:
-	@set -x; \
-	cd $(ADDON_ROOT); \
+	@cd $(ADDON_ROOT); \
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash scripts/build-server.sh
 .PHONY: local-build
 
 run-server: build-server
-	@set -x; \
-	cd $(ADDON_ROOT)/local; \
+	@cd $(ADDON_ROOT)/local; \
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash ../scripts/run-server.sh
 .PHONY: local-run
 
 generate-server-spec:
-	@set -e; \
-	\
-	cd $(ADDON_ROOT)/server; \
+	@cd $(ADDON_ROOT)/server; \
 	rm -rf spec; \
 	mkdir spec; \
 	\

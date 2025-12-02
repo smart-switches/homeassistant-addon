@@ -1,4 +1,4 @@
-version: "0.0.7"
+version: "0.0.8"
 name: "Smart Switches"
 description: "Configure smart switches in your home"
 slug: "smart-switches"

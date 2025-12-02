@@ -1,18 +1,19 @@
 SHELL := /bin/bash -e
 
 MF_PATH := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+ADDON_ROOT := $(MF_PATH)/smart-switches
 
 IMAGE_NAME := ha-smart-switches
 
 tidy-server:
-	@cd $(MF_PATH)/server; \
+	@cd $(ADDON_ROOT)/server; \
 	go mod tidy; \
 	go fmt ./...
 .PHONY: tidy-server
 
 build-server:
 	@set -x; \
-	cd $(MF_PATH); \
+	cd $(ADDON_ROOT); \
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash scripts/build-server.sh
@@ -20,7 +21,7 @@ build-server:
 
 run-server: build-server
 	@set -x; \
-	cd $(MF_PATH)/local; \
+	cd $(ADDON_ROOT)/local; \
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash ../scripts/run-server.sh
@@ -29,7 +30,7 @@ run-server: build-server
 generate-server-spec:
 	@set -e; \
 	\
-	cd server; \
+	cd $(ADDON_ROOT)/server; \
 	rm -rf spec; \
 	mkdir spec; \
 	\
@@ -43,8 +44,8 @@ generate-server-spec:
 generate-server-sdk:
 	@docker run --rm \
 		--user $$(id -u) \
-		-v $$(pwd)/site/src/api:/local \
-		-v $$(pwd)/server/spec:/spec \
+		-v $(ADDON_ROOT)/site/src/api:/local \
+		-v $$(ADDON_ROOT)/server/spec:/spec \
 		openapitools/openapi-generator-cli:latest generate \
 		-i /spec/openapi.yaml \
 		-g typescript \
@@ -53,20 +54,25 @@ generate-server-sdk:
 .PHONY: generate-server-sdk
 
 build-site:
-	@cd $(MF_PATH)/site && npm run build
+	@cd $(ADDON_ROOT)/site && npm run build
 .PHONY: run-site
 
 run-site:
-	@cd $(MF_PATH)/site && npm run develop
+	@cd $(ADDON_ROOT)/site && npm run develop
 .PHONY: run-site
 
 build-mockha:
-	@cd mockha; \
-	GOOS=linux go build -tags netgo -o mockha-linux; \
+	@cd $(ADDON_ROOT)/mockha; \
+	\
+	GOOS=linux go build \
+		-tags netgo \
+		-o mockha-linux; \
+	\
 	DOCKER_BUILDKIT=1 docker build --quiet --tag lucaspopp0/mockha:latest .
 .PHONY: build-mockha
 
 run-mockha:
 	@make build-mockha; \
+	\
 	docker run --rm -p 8123:8123 lucaspopp0/mockha:latest
 .PHONY: run-mockha

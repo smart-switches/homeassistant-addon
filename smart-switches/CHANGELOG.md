@@ -1,3 +1,3 @@
-# v0.0.10
- * [`84b27e4`](https://github.com/smart-switches/homeassistant-addon/commit/84b27e4) long press picker
+# v0.0.11
+ * [`cb0869d`](https://github.com/smart-switches/homeassistant-addon/commit/cb0869d) rebuild site
 

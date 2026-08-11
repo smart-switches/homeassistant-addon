@@ -1,3 +1,3 @@
-# v0.0.8
- * [`e210bce`](https://github.com/smart-switches/homeassistant-addon/commit/e210bce) move makefile to repo root
+# v0.0.10
+ * [`84b27e4`](https://github.com/smart-switches/homeassistant-addon/commit/84b27e4) long press picker
 

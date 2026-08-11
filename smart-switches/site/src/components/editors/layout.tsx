@@ -179,39 +179,145 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                 })
             }
             {
-              // Add button dropdown for unconfigured buttons
+              (() => {
+                const longPressButtons = basicButtons.filter(btn => currentLayout.buttons[`${btn}-long`])
+
+                if (longPressButtons.length === 0) return <></>
+
+                return <>
+                  <Typography.Text
+                      type="secondary"
+                      style={{ textTransform: 'uppercase', paddingLeft: 12, paddingTop: 12, }}
+                      strong
+                  >
+                      Long Press
+                  </Typography.Text>
+                  {
+                    longPressButtons.map(buttonName => {
+                      const longPressKey = `${buttonName}-long`
+                      const command = currentLayout.buttons[longPressKey]
+                      if (!command) return <></>
+
+                      const r = Math.round(command.color?.[0] ?? 50)
+                      const g = Math.round(command.color?.[1] ?? 100)
+                      const b = Math.round(command.color?.[2] ?? 255)
+
+                      return row(longPressKey, buttonName, <Space direction='horizontal'>
+                        <ColorPicker
+                          value={`rgb(${r},${g},${b})`}
+                          onChange={color => {
+                            const { r, g, b } = color.toRgb()
+                            command.color = [r, g, b]
+                            currentLayout.buttons[longPressKey] = command
+
+                            return onUpdate()
+                          }}
+                        />
+                        <ExecutablePicker
+                            value={currentLayout.buttons[longPressKey]?.cmd}
+                            api={props.api}
+                            onPick={async picked => {
+                              let currentButton = currentLayout.buttons[longPressKey]
+
+                              if (currentButton && picked) {
+                                currentButton.cmd = picked.entityId
+                                currentLayout.buttons[longPressKey] = currentButton
+                              }
+
+                              return onUpdate()
+                            }}
+                          />
+                          <Button
+                            icon={<CaretRightFilled />}
+                            disabled={!currentLayout.buttons[longPressKey]}
+                            onClick={() => {
+                              props.api
+                                .press({
+                                  _switch: props.currentSwitch as string,
+                                  layout: props.currentLayout as string,
+                                  key: longPressKey,
+                                })
+                                .catch(err => {
+                                  console.error(err)
+                                })
+                            }}
+                          />
+                          <Button
+                            danger
+                            onClick={() => {
+                              delete currentLayout.buttons[longPressKey]
+                              return onUpdate()
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </Space>,
+                      )
+                    })
+                  }
+                </>
+              })()
+            }
+            {
+              // Add button / configure long press dropdowns
               (() => {
                 const unconfiguredButtons = basicButtons.filter(btn => !currentLayout.buttons[btn])
+                const longPressableButtons = basicButtons.filter(btn => (
+                  currentLayout.buttons[btn] && !currentLayout.buttons[`${btn}-long`]
+                ))
 
-                if (unconfiguredButtons.length > 0) {
-                  return (
-                    <div style={{ ...styles.editorRow, justifyContent: 'flex-start' }}>
-                      <Select
-                        placeholder="Add button"
-                        style={{ width: 150 }}
-                        value={null}
-                        onChange={async (value) => {
-                          if (value) {
-                            // Initialize the button with default values
-                            console.log('Adding button:', value)
-                            currentLayout.buttons[value] = {
-                              cmd: '',
-                              color: [0, 0, 255]
-                            }
-                            console.log('Button added to layout, calling onUpdate')
-                            await onUpdate()
-                            console.log('onUpdate completed')
-                          }
-                        }}
-                        options={unconfiguredButtons.map(btn => ({
-                          value: btn,
-                          label: btn
-                        }))}
-                      />
-                    </div>
-                  )
+                if (unconfiguredButtons.length === 0 && longPressableButtons.length === 0) {
+                  return <></>
                 }
-                return <></>
+
+                return (
+                  <div style={{ ...styles.editorRow, justifyContent: 'flex-start' }}>
+                    <Space direction='horizontal'>
+                      {unconfiguredButtons.length > 0 && (
+                        <Select
+                          placeholder="Add button"
+                          style={{ width: 150 }}
+                          value={null}
+                          onChange={async (value) => {
+                            if (value) {
+                              // Initialize the button with default values
+                              currentLayout.buttons[value] = {
+                                cmd: '',
+                                color: [0, 0, 255]
+                              }
+                              await onUpdate()
+                            }
+                          }}
+                          options={unconfiguredButtons.map(btn => ({
+                            value: btn,
+                            label: btn
+                          }))}
+                        />
+                      )}
+                      {longPressableButtons.length > 0 && (
+                        <Select
+                          placeholder="Configure long press"
+                          style={{ width: 190 }}
+                          value={null}
+                          onChange={async (value) => {
+                            if (value) {
+                              // Initialize the long press command with default values
+                              currentLayout.buttons[`${value}-long`] = {
+                                cmd: '',
+                                color: [0, 0, 255]
+                              }
+                              await onUpdate()
+                            }
+                          }}
+                          options={longPressableButtons.map(btn => ({
+                            value: btn,
+                            label: btn
+                          }))}
+                        />
+                      )}
+                    </Space>
+                  </div>
+                )
               })()
             }
             <div style={{ display: 'flex', flexGrow: 2, }}/>

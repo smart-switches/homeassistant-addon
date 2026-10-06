@@ -41,7 +41,7 @@ generate-server-sdk:
 	@docker run --rm \
 		--user $$(id -u) \
 		-v $(ADDON_ROOT)/site/src/api:/local \
-		-v $$(ADDON_ROOT)/server/spec:/spec \
+		-v $(ADDON_ROOT)/server/spec:/spec \
 		openapitools/openapi-generator-cli:latest generate \
 		-i /spec/openapi.yaml \
 		-g typescript \

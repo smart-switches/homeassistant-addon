@@ -6,6 +6,7 @@ export * from '../models/Executable';
 export * from '../models/LayoutDefinition';
 export * from '../models/LayoutInstance';
 export * from '../models/ListExecutablesResponseBody';
+export * from '../models/PingResponseBody';
 export * from '../models/PostPressRequestBody';
 export * from '../models/Switch';
 
@@ -17,6 +18,7 @@ import { Executable } from '../models/Executable';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { PingResponseBody } from '../models/PingResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -44,6 +46,7 @@ let typeMap: {[index: string]: any} = {
     "LayoutDefinition": LayoutDefinition,
     "LayoutInstance": LayoutInstance,
     "ListExecutablesResponseBody": ListExecutablesResponseBody,
+    "PingResponseBody": PingResponseBody,
     "PostPressRequestBody": PostPressRequestBody,
     "Switch": Switch,
 }

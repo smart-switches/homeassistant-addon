@@ -11,6 +11,7 @@ import { Executable } from '../models/Executable';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { PingResponseBody } from '../models/PingResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -116,6 +117,36 @@ export class ObservableDefaultApi {
      */
     public listExecutables(_options?: ConfigurationOptions): Observable<ListExecutablesResponseBody> {
         return this.listExecutablesWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<ListExecutablesResponseBody>) => apiResponse.data));
+    }
+
+    /**
+     * Validate connectivity to the server
+     */
+    public pingWithHttpInfo(_options?: ConfigurationOptions): Observable<HttpInfo<PingResponseBody>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.ping(_config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.pingWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Validate connectivity to the server
+     */
+    public ping(_options?: ConfigurationOptions): Observable<PingResponseBody> {
+        return this.pingWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<PingResponseBody>) => apiResponse.data));
     }
 
     /**

@@ -10,6 +10,7 @@ import { Executable } from '../models/Executable';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { PingResponseBody } from '../models/PingResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 import { ObservableDefaultApi } from './ObservableAPI';
@@ -75,6 +76,24 @@ export class PromiseDefaultApi {
     public listExecutables(_options?: PromiseConfigurationOptions): Promise<ListExecutablesResponseBody> {
         const observableOptions = wrapOptions(_options);
         const result = this.api.listExecutables(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Validate connectivity to the server
+     */
+    public pingWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<PingResponseBody>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.pingWithHttpInfo(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Validate connectivity to the server
+     */
+    public ping(_options?: PromiseConfigurationOptions): Promise<PingResponseBody> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.ping(observableOptions);
         return result.toPromise();
     }
 

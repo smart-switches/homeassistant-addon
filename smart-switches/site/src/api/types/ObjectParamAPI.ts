@@ -10,6 +10,7 @@ import { Executable } from '../models/Executable';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { PingResponseBody } from '../models/PingResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -23,6 +24,9 @@ export interface DefaultApiGetLayoutDefinitionsRequest {
 }
 
 export interface DefaultApiListExecutablesRequest {
+}
+
+export interface DefaultApiPingRequest {
 }
 
 export interface DefaultApiPressRequest {
@@ -94,6 +98,22 @@ export class ObjectDefaultApi {
      */
     public listExecutables(param: DefaultApiListExecutablesRequest = {}, options?: ConfigurationOptions): Promise<ListExecutablesResponseBody> {
         return this.api.listExecutables( options).toPromise();
+    }
+
+    /**
+     * Validate connectivity to the server
+     * @param param the request object
+     */
+    public pingWithHttpInfo(param: DefaultApiPingRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<PingResponseBody>> {
+        return this.api.pingWithHttpInfo( options).toPromise();
+    }
+
+    /**
+     * Validate connectivity to the server
+     * @param param the request object
+     */
+    public ping(param: DefaultApiPingRequest = {}, options?: ConfigurationOptions): Promise<PingResponseBody> {
+        return this.api.ping( options).toPromise();
     }
 
     /**

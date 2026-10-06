@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { PageProps } from "gatsby"
+import type { HeadFC, PageProps } from "gatsby"
 
 // Importing the Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -392,3 +392,5 @@ const IndexPage: React.FC<PageProps> = () => {
 }
 
 export default IndexPage
+
+export const Head: HeadFC = () => <title>Smart Switches</title>

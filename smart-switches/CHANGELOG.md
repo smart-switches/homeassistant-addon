@@ -1,3 +1,3 @@
-# v0.0.11
- * [`cb0869d`](https://github.com/smart-switches/homeassistant-addon/commit/cb0869d) rebuild site
+# v0.0.12
+ * [`d5bf2bf`](https://github.com/smart-switches/homeassistant-addon/commit/d5bf2bf) feat: Add a new /ping endpoint for validating connectivity
 

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ListExecutablesResponseBody, Executable, DefaultApi } from "../../api"
-import { Select, Space, Typography } from "antd"
+import { Autocomplete, Stack, TextField, Typography } from "@mui/material"
 import { monospace } from "../../styles"
 import useForceRefresh from "../../hooks/useForceRefresh"
 
@@ -34,50 +34,48 @@ const ExecutablePicker: React.FC<ExecuablePickerProps> = (props) => {
         }
     }, [fetchingExecutables, setFetchingExecutables, executables, setExecutables])
 
+    const ids = Object.keys(executables ?? {})
+
     return (
-        <Select
-            showSearch
-            placeholder="none"
-            value={props.value}
-            optionFilterProp="label"
-            popupMatchSelectWidth={false}
-            onChange={value => {
+        <Autocomplete
+            size="small"
+            sx={{ width: 220 }}
+            options={ids}
+            value={props.value && ids.includes(props.value) ? props.value : null}
+            slotProps={{
+                popper: {
+                    style: { width: 'fit-content' },
+                    placement: 'bottom-start',
+                },
+            }}
+            getOptionLabel={entityId => (executables ?? {})[entityId]?.friendlyName ?? entityId}
+            filterOptions={(options, state) => {
+                const query = state.inputValue.toLowerCase()
+
+                return options.filter(entityId => (
+                    entityId.toLowerCase().includes(query) ||
+                    ((executables ?? {})[entityId]?.friendlyName ?? '').toLowerCase().includes(query)
+                ))
+            }}
+            onChange={(_, value) => {
                 console.log('executable picker changed to:', value)
 
-                if (props.onPick && executables){
-                    if (value) {
-                        props.onPick(executables[value])
-                    } else {
-                        props.onPick(undefined)
-                    }
+                if (props.onPick && executables) {
+                    props.onPick(value ? executables[value] : undefined)
                 }
             }}
-            options={
-                [
-                    {
-                        value: undefined,
-                        label: 'none',
-                    },
-                    {
-                        value: undefined,
-                        label: '--',
-                        disabled: true,
-                    },
-                    ...Object.keys(executables ?? {}).map(entityId => (
-                        {
-                            value: entityId,
-                            label: (executables ?? {})[entityId]?.friendlyName
-                        }
-                    )),
-                ]
-            }
-            optionRender={option => (
-                executables && option.value ? 
-                    <Space direction="vertical">
-                        <Typography.Text italic type="secondary" style={monospace}>{executables[option.value].entityId}</Typography.Text>
-                        <Typography.Text>{executables[option.value].friendlyName}</Typography.Text>
-                    </Space> :
-                    option.label
+            renderInput={params => <TextField {...params} placeholder="none" />}
+            renderOption={(optionProps, entityId) => (
+                <li {...optionProps} key={entityId}>
+                    <Stack>
+                        <Typography variant="caption" color="text.secondary" fontStyle="italic" style={monospace}>
+                            {entityId}
+                        </Typography>
+                        <Typography variant="body2">
+                            {(executables ?? {})[entityId]?.friendlyName}
+                        </Typography>
+                    </Stack>
+                </li>
             )}
         />
     )

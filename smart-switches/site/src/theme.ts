@@ -15,9 +15,25 @@ const systemFontStack = [
 ].join(",")
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1677ff',
+  // Expose the palette as --mui-* CSS variables, and pick the light/dark scheme
+  // from the OS-level prefers-color-scheme media query (no JS, so no flash on load)
+  cssVariables: {
+    colorSchemeSelector: "media",
+  },
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: {
+          main: "#1677ff",
+        },
+      },
+    },
+    dark: {
+      palette: {
+        primary: {
+          main: "#4096ff",
+        },
+      },
     },
   },
   typography: {

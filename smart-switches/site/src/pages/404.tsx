@@ -2,7 +2,7 @@ import * as React from "react"
 import { Link, HeadFC, PageProps } from "gatsby"
 
 const pageStyles = {
-  color: "#232129",
+  color: "var(--mui-palette-text-primary)",
   padding: "96px",
   fontFamily: "-apple-system, Roboto, sans-serif, serif",
 }
@@ -16,9 +16,9 @@ const paragraphStyles = {
   marginBottom: 48,
 }
 const codeStyles = {
-  color: "#8A6534",
+  color: "var(--mui-palette-warning-dark)",
   padding: 4,
-  backgroundColor: "#FFF4DB",
+  backgroundColor: "var(--mui-palette-action-hover)",
   fontSize: "1.25rem",
   borderRadius: 4,
 }

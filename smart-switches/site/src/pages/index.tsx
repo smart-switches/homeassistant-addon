@@ -20,8 +20,9 @@ import LayoutEditor from "../components/editors/layout";
 import { Config, createConfiguration, DefaultApi, ListExecutablesResponseBody, server1 } from "../api";
 import { fetchLayoutDefinitions } from "../api/convenience";
 
-const borderColor = 'rgb(224, 229, 229)';
-const backgroundColor = 'white';
+// Theme tokens, which resolve to the light or dark value based on the active color scheme
+const borderColor = 'var(--mui-palette-divider)';
+const backgroundColor = 'var(--mui-palette-background-paper)';
 
 const styles: { [key: string]: React.CSSProperties } = {
   page: {
@@ -38,13 +39,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   header: {
     paddingLeft: 12,
     paddingRight: 12,
-    background: 'white',
+    background: backgroundColor,
     fontWeight: 'bold',
   },
   content: {
     borderTop: `solid 1px ${borderColor}`,
     display: 'flex',
-    color: "#232129",
+    color: "var(--mui-palette-text-primary)",
     flexDirection: 'row',
     flexGrow: 2,
     margin: 0,

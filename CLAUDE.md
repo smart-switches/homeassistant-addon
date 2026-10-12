@@ -23,11 +23,11 @@ Web UI for configuring smart switches. **Go backend** + **React frontend**.
 ## Development
 
 ```bash
-make -C smart-switches tidy-server        # Tidy Go modules (run after go.mod changes!)
-make -C smart-switches build-server       # Build Go backend
-make -C smart-switches run-server         # Run backend (port 8124)
-make -C smart-switches generate-server-sdk # Regenerate TypeScript client
-make -C smart-switches run-site           # Run frontend dev server (port 7128)
+make tidy-server        # Tidy Go modules (run after go.mod changes!)
+make build-server       # Build Go backend
+make run-server         # Run backend (port 8124)
+make generate-server-sdk # Regenerate TypeScript client
+make run-site           # Run frontend dev server (port 7128)
 ```
 
 **Important**: Always run `make tidy-server` after changing Go dependencies before committing.

@@ -1,8 +1,7 @@
 import React from 'react';
-import ConfirmModal from '../modals/confirm';
-import { CaretRightFilled } from '@ant-design/icons';
-import { Button, Space, Switch, Typography, ColorPicker, Select } from 'antd';
-import { config } from 'process';
+import PlayArrow from '@mui/icons-material/PlayArrow';
+import { Button, IconButton, MenuItem, Select, Stack, Switch, Typography } from '@mui/material';
+import ColorPicker from '../inputs/color-picker';
 import ExecutablePicker from '../inputs/executable-picker';
 import { DefaultApi, Config } from '../../api';
 import { ButtonsByLayout } from '../../api/convenience';
@@ -99,15 +98,16 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
           <div style={{ display: 'flex', flexDirection: 'column', width: 400 }}>
             {canFlip
               ? <>
-                <Typography.Text
-                    type="secondary"
-                    style={{ textTransform: 'uppercase', paddingLeft: 12, paddingTop: 12, }}
-                    strong
-                >Layout</Typography.Text>
+                <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    fontWeight="bold"
+                    sx={{ textTransform: 'uppercase', pl: 1.5, pt: 1.5 }}
+                >Layout</Typography>
               {
                 row('flipped', 'Flipped?', <Switch
-                  value={canFlip ? (currentLayout as { flipped?: boolean }).flipped : false}
-                  onChange={checked => {
+                  checked={canFlip ? !!(currentLayout as { flipped?: boolean }).flipped : false}
+                  onChange={(_, checked) => {
                     if (canFlip) {
                       (currentLayout as { flipped?: boolean }).flipped = checked
                       return onUpdate()
@@ -117,13 +117,12 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
               )}</>
               : <></>
             }
-            <Typography.Text
-                type="secondary"
-                style={{ textTransform: 'uppercase', paddingLeft: 12, paddingTop: 12, }}
-                strong
-            >
-                Basic Buttons
-            </Typography.Text>
+            <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    fontWeight="bold"
+                    sx={{ textTransform: 'uppercase', pl: 1.5, pt: 1.5 }}
+                >Basic Buttons</Typography>
             {
               basicButtons
                 .map(buttonName => {
@@ -134,11 +133,10 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                   const g = Math.round(command.color?.[1] ?? 100)
                   const b = Math.round(command.color?.[2] ?? 255)
 
-                  return row(buttonName, buttonName, <Space direction='horizontal'>
+                  return row(buttonName, buttonName, <Stack direction='row' spacing={1} alignItems='center'>
                     <ColorPicker
-                      value={`rgb(${r},${g},${b})`}
-                      onChange={color => {
-                        const { r, g, b } = color.toRgb()
+                      value={{ r, g, b }}
+                      onChange={({ r, g, b }) => {
                         command.color = [r, g, b]
                         currentLayout.buttons[buttonName] = command
 
@@ -159,8 +157,8 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                           return onUpdate()
                         }}
                       />
-                      <Button
-                        icon={<CaretRightFilled />}
+                      <IconButton
+                        size="small"
                         disabled={!currentLayout.buttons[buttonName]}
                         onClick={() => {
                           props.api
@@ -173,8 +171,10 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                               console.error(err)
                             })
                         }}
-                      />
-                    </Space>,
+                      >
+                        <PlayArrow />
+                      </IconButton>
+                    </Stack>,
                   )
                 })
             }
@@ -185,13 +185,12 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                 if (longPressButtons.length === 0) return <></>
 
                 return <>
-                  <Typography.Text
-                      type="secondary"
-                      style={{ textTransform: 'uppercase', paddingLeft: 12, paddingTop: 12, }}
-                      strong
-                  >
-                      Long Press
-                  </Typography.Text>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    fontWeight="bold"
+                    sx={{ textTransform: 'uppercase', pl: 1.5, pt: 1.5 }}
+                >Long Press</Typography>
                   {
                     longPressButtons.map(buttonName => {
                       const longPressKey = `${buttonName}-long`
@@ -202,11 +201,10 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                       const g = Math.round(command.color?.[1] ?? 100)
                       const b = Math.round(command.color?.[2] ?? 255)
 
-                      return row(longPressKey, buttonName, <Space direction='horizontal'>
+                      return row(longPressKey, buttonName, <Stack direction='row' spacing={1} alignItems='center'>
                         <ColorPicker
-                          value={`rgb(${r},${g},${b})`}
-                          onChange={color => {
-                            const { r, g, b } = color.toRgb()
+                          value={{ r, g, b }}
+                          onChange={({ r, g, b }) => {
                             command.color = [r, g, b]
                             currentLayout.buttons[longPressKey] = command
 
@@ -227,8 +225,8 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                               return onUpdate()
                             }}
                           />
-                          <Button
-                            icon={<CaretRightFilled />}
+                          <IconButton
+                            size="small"
                             disabled={!currentLayout.buttons[longPressKey]}
                             onClick={() => {
                               props.api
@@ -241,17 +239,20 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                                   console.error(err)
                                 })
                             }}
-                          />
+                        >
+                            <PlayArrow />
+                          </IconButton>
                           <Button
-                            danger
+                            color="error"
+                            size="small"
                             onClick={() => {
                               delete currentLayout.buttons[longPressKey]
                               return onUpdate()
                             }}
-                          >
+                        >
                             Remove
                           </Button>
-                        </Space>,
+                        </Stack>,
                       )
                     })
                   }
@@ -272,13 +273,16 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
 
                 return (
                   <div style={{ ...styles.editorRow, justifyContent: 'flex-start' }}>
-                    <Space direction='horizontal'>
+                    <Stack direction='row' spacing={1} alignItems='center'>
                       {unconfiguredButtons.length > 0 && (
                         <Select
-                          placeholder="Add button"
-                          style={{ width: 150 }}
-                          value={null}
-                          onChange={async (value) => {
+                          size="small"
+                          displayEmpty
+                          sx={{ width: 150 }}
+                          value=""
+                          renderValue={() => <Typography color="text.secondary">Add button</Typography>}
+                          onChange={async (event) => {
+                            const value = event.target.value
                             if (value) {
                               // Initialize the button with default values
                               currentLayout.buttons[value] = {
@@ -288,18 +292,21 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                               await onUpdate()
                             }
                           }}
-                          options={unconfiguredButtons.map(btn => ({
-                            value: btn,
-                            label: btn
-                          }))}
-                        />
+                        >
+                          {unconfiguredButtons.map(btn => (
+                            <MenuItem key={btn} value={btn}>{btn}</MenuItem>
+                          ))}
+                        </Select>
                       )}
                       {longPressableButtons.length > 0 && (
                         <Select
-                          placeholder="Configure long press"
-                          style={{ width: 190 }}
-                          value={null}
-                          onChange={async (value) => {
+                          size="small"
+                          displayEmpty
+                          sx={{ width: 190 }}
+                          value=""
+                          renderValue={() => <Typography color="text.secondary">Configure long press</Typography>}
+                          onChange={async (event) => {
+                            const value = event.target.value
                             if (value) {
                               // Initialize the long press command with default values
                               currentLayout.buttons[`${value}-long`] = {
@@ -309,13 +316,13 @@ const LayoutEditor: React.FC<LayoutEditorProps> = props => {
                               await onUpdate()
                             }
                           }}
-                          options={longPressableButtons.map(btn => ({
-                            value: btn,
-                            label: btn
-                          }))}
-                        />
+                        >
+                          {longPressableButtons.map(btn => (
+                            <MenuItem key={btn} value={btn}>{btn}</MenuItem>
+                          ))}
+                        </Select>
                       )}
-                    </Space>
+                    </Stack>
                   </div>
                 )
               })()

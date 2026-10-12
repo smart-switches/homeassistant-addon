@@ -1,14 +1,20 @@
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
 
-// Importing the Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from 'react-bootstrap/Navbar';
 import NewSwitchModal from "../components/modals/new-switch";
 import LayoutPicker from "../components/inputs/layout-picker";
-import { Button, Menu } from "antd";
-import { MenuItemType } from "antd/lib/menu/interface";
-import { DeleteOutlined } from "@ant-design/icons";
+import {
+  AppBar,
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmModal from "../components/modals/confirm";
 import LayoutEditor from "../components/editors/layout";
 import { Config, createConfiguration, DefaultApi, ListExecutablesResponseBody, server1 } from "../api";
@@ -196,10 +202,8 @@ const IndexPage: React.FC<PageProps> = () => {
       {`This cannot be undone.`}
     </>}
     open={showConfirmDeleteSwitch}
-    okButtonProps={{
-      color: 'danger',
-      title: 'Delete'
-    }}
+    okText="Delete"
+    okColor="error"
     onOk={() => deleteSwitch(currentSwitch as string)}
     onCancel={() => {
       setShowConfirmDeleteSwitch(false)
@@ -215,10 +219,8 @@ const IndexPage: React.FC<PageProps> = () => {
       {`This cannot be undone.`}
     </>}
     open={showConfirmDeleteLayout}
-    okButtonProps={{
-      color: 'danger',
-      title: 'Delete'
-    }}
+    okText="Delete"
+    okColor="error"
     onOk={() => deleteLayout(currentLayout as string)}
     onCancel={() => {
       setShowConfirmDeleteLayout(false)
@@ -226,112 +228,119 @@ const IndexPage: React.FC<PageProps> = () => {
   />)
 
   const switchesMenu = (
-    <Menu
-      style={styles.sidebar}
-      onSelect={({ key }) => {
-        if (key == "add-new") {
-          return
-        }
-
-        setCurrentSwitch(key)
-        setCurrentLayout(Object.keys(config?.switches[key].layouts ?? {})[0])
-      }}
-      items={[
-        ...(Object.keys(config?.switches ?? {}).length
-          ? Object.keys(config?.switches ?? {}).map((name: string): MenuItemType => (
-            {
-              key: name,
-              label: name,
-              extra: <Button
-                color="danger"
-                variant="text"
-                icon={<DeleteOutlined />}
-                onClick={async () => {
+    <List disablePadding style={styles.sidebar}>
+      {Object.keys(config?.switches ?? {}).length
+        ? Object.keys(config?.switches ?? {}).map((name: string) => (
+          <ListItem
+            key={name}
+            disablePadding
+            secondaryAction={
+              <IconButton
+                edge="end"
+                color="error"
+                aria-label={`Delete ${name}`}
+                onClick={() => {
+                  setCurrentSwitch(name)
                   setShowConfirmDeleteSwitch(true)
                 }}
-              />,
-            } ))
-          : [{
-            key: 'none',
-            disabled: true,
-            label: 'Add a switch to get started'
-          }]),
-        {
-          key: 'add-new',
-          disabled: true,
-          label: <Button
-            onClick={() => {
-              setShowNewSwitch(true)
-            }}
-          >Add switch</Button>,
-        }
-      ]}
-    />
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemButton
+              selected={name === currentSwitch}
+              onClick={() => {
+                setCurrentSwitch(name)
+                setCurrentLayout(Object.keys(config?.switches[name].layouts ?? {})[0])
+              }}
+            >
+              <ListItemText primary={name} />
+            </ListItemButton>
+          </ListItem>
+        ))
+        : (
+          <ListItem>
+            <ListItemText secondary="Add a switch to get started" />
+          </ListItem>
+        )}
+      <ListItem>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setShowNewSwitch(true)
+          }}
+        >Add switch</Button>
+      </ListItem>
+    </List>
   )
 
   const layoutsMenu = (
-    <Menu
-      style={styles.sidebar}
-      onSelect={({ key }) => {
-        if (key == 'add-new') {
-          return
-        }
-
-        console.log(`Selecting ${key}`, sw?.layouts[key])
-        setCurrentLayout(key)
-      }}
-      items={
-        sw ? [
-          ...(Object.keys(sw.layouts).length
-            ? Object.keys(sw.layouts).map((name: string): MenuItemType => (
-              {
-                key: name,
-                label: name,
-                extra: <Button
-                  color="danger"
-                  variant="text"
-                  icon={<DeleteOutlined />}
-                  onClick={async () => {
-                    setShowConfirmDeleteLayout(true)
+    <List disablePadding style={styles.sidebar}>
+      {sw && (
+        <>
+          {Object.keys(sw.layouts).length
+            ? Object.keys(sw.layouts).map((name: string) => (
+              <ListItem
+                key={name}
+                disablePadding
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    color="error"
+                    aria-label={`Delete ${name}`}
+                    onClick={() => {
+                      setCurrentLayout(name)
+                      setShowConfirmDeleteLayout(true)
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemButton
+                  selected={name === currentLayout}
+                  onClick={() => {
+                    console.log(`Selecting ${name}`, sw?.layouts[name])
+                    setCurrentLayout(name)
                   }}
-                />,
-              }))
-            : [
-              {
-                key: 'helptext',
-                disabled: true,
-                label: 'Add a layout set up commands'
-              }
-            ]),
-          {
-            key: 'add-new',
-            disabled: true,
-            label: (
-              <LayoutPicker
-                switch={sw}
-                onPick={async (key, layout) => {
-                  if (!sw) return
+                >
+                  <ListItemText primary={name} />
+                </ListItemButton>
+              </ListItem>
+            ))
+            : (
+              <ListItem>
+                <ListItemText secondary="Add a layout set up commands" />
+              </ListItem>
+            )}
+          <ListItem>
+            <LayoutPicker
+              switch={sw}
+              onPick={async (key, layout) => {
+                if (!sw) return
 
-                  sw.layouts[key] = layout
-                  if (!!config?.switches && !!currentSwitch) {
-                    config.switches[currentSwitch] = sw
-                    await api.putConfig(config)
-                    setCurrentLayout(key)
-                  }
-                }}
-              />
-            )
-          }
-        ] : []
-      }
-    />
+                sw.layouts[key] = layout
+                if (!!config?.switches && !!currentSwitch) {
+                  config.switches[currentSwitch] = sw
+                  await api.putConfig(config)
+                  setCurrentLayout(key)
+                }
+              }}
+            />
+          </ListItem>
+        </>
+      )}
+    </List>
   )
 
   return (
     <main style={styles.page}>
-      <Navbar expand="lg" style={styles.header}>
-          <Navbar.Brand href="#home">Smart Switches</Navbar.Brand>
-      </Navbar>
+      <AppBar position="static" color="inherit" elevation={0}>
+        <Toolbar variant="dense" style={styles.header}>
+          <Typography variant="h6" component="h1" fontWeight="bold">Smart Switches</Typography>
+        </Toolbar>
+      </AppBar>
       <div style={styles.content}>
         {switchesMenu}
         {layoutsMenu}

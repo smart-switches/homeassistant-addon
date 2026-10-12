@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from "antd"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import React from "react"
 
 export type ConfirmProps = {
@@ -7,45 +7,54 @@ export type ConfirmProps = {
     open: boolean,
     onOk: () => Promise<void>,
     onCancel: () => void,
-    okButtonProps?: ModalProps['okButtonProps']
+    okText?: string,
+    okColor?: 'primary' | 'error',
 }
 
 const ConfirmModal: React.FC<ConfirmProps> = props => {
     const [loading, setLoading] = React.useState(false)
-    const [failed, setFailed] = React.useState(false)
 
-    if (!props.open && loading) {
-        setLoading(false)
-    }
-
-    if (!props.open && failed) {
-        setFailed(false)
-    }
+    React.useEffect(() => {
+        if (!props.open) {
+            setLoading(false)
+        }
+    }, [props.open])
 
     const onOk = async () => {
         setLoading(true)
-        setFailed(false)
-        
+
         try {
             await props.onOk()
         } catch(e) {
-            setFailed(true)
+            console.error(e)
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <Modal
-            title={props.title}
+        <Dialog
             open={props.open}
-            onOk={onOk}
-            confirmLoading={loading}
-            onCancel={props.onCancel}
-            okButtonProps={props.okButtonProps}
+            onClose={loading ? undefined : props.onCancel}
         >
-            {props.body}
-        </Modal>
+            <DialogTitle>{props.title}</DialogTitle>
+            <DialogContent>
+                {props.body}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.onCancel} disabled={loading}>
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color={props.okColor ?? 'primary'}
+                    loading={loading}
+                    onClick={onOk}
+                >
+                    {props.okText ?? 'OK'}
+                </Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 

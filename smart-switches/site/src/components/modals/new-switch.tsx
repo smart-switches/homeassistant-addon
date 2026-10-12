@@ -1,9 +1,10 @@
 import React from "react"
 import { Config } from "../../api";
-import { Modal, Button, message } from "antd";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { z } from "zod";
-import { AutoForm } from "uniforms-antd";
+import { AutoForm } from "uniforms-mui";
 import ZodBridge from "uniforms-bridge-zod";
+import { useSnackbar } from "../snackbar";
 
 // Define the schema using zod
 const switchSchema = z.object({
@@ -24,38 +25,48 @@ export type NewSwitchModalProps = {
 
 const NewSwitchModal: React.FC<NewSwitchModalProps> = (props) => {
   const formRef = React.useRef<any>(null);
-  
+  const snackbar = useSnackbar();
+
   const onShow = props.onShow ?? (() => {});
   const onHide = props.onHide ?? (() => {});
-  
+
   const handleSubmit = async (model: { name: string }) => {
     const onConfirm = props.onConfirm ?? (async (_: string) => {});
-    
+
     try {
       await onConfirm(model.name);
       onHide();
     } catch (error) {
-      message.error(`Failed to add switch: ${String(error)}`);
+      snackbar.show(`Failed to add switch: ${String(error)}`, "error");
     }
   };
 
   return (
-    <Modal
-      title="Add Switch"
-      open={props.show}
-      afterOpenChange={(visible) => {
-        if (visible) {
-          onShow();
-        }
+    <Dialog
+      open={!!props.show}
+      onClose={onHide}
+      fullWidth
+      maxWidth="xs"
+      slotProps={{
+        transition: {
+          onEntered: onShow,
+        },
       }}
-      onCancel={onHide}
-      footer={[
-        <Button key="cancel" onClick={onHide}>
+    >
+      <DialogTitle>Add Switch</DialogTitle>
+      <DialogContent>
+        <AutoForm
+          ref={formRef}
+          schema={bridge}
+          onSubmit={handleSubmit}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onHide}>
           Cancel
-        </Button>,
-        <Button 
-          key="submit" 
-          type="primary"
+        </Button>
+        <Button
+          variant="contained"
           onClick={() => {
             if (formRef.current) {
               formRef.current.submit();
@@ -64,13 +75,8 @@ const NewSwitchModal: React.FC<NewSwitchModalProps> = (props) => {
         >
           Save
         </Button>
-      ]}
-    >
-      <AutoForm
-        schema={bridge}
-        onSubmit={handleSubmit}
-      />
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Switch } from "../../api"
 import { LayoutInstance } from "../../api/models/LayoutInstance"
-import { Button, Dropdown, Space, Typography } from "antd"
+import { Button, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import { LayoutNames, LayoutDescriptions } from "../../api/convenience"
 
 export type LayoutPickerProps = {
@@ -28,37 +28,42 @@ const LayoutPicker: React.FC<LayoutPickerProps> = (props) => {
         props.onPick(layout, newLayout)
     }
 
+    const [anchor, setAnchor] = React.useState<HTMLElement | null>(null)
+
     return (
-        <Dropdown
-            menu={{
-                items: LayoutNames.map(layout => ({
-                    key: layout,
-                    label: (
-                        <Space size='small' direction="vertical" style={{ maxWidth: 200 }}>
-                            <Typography.Text
-                                strong
-                                disabled={!!sw.layouts[layout]}
-                            >
-                                {layout}
-                            </Typography.Text>
-                            <Typography.Text
-                                disabled={!!sw.layouts[layout]}
-                            >
-                                {LayoutDescriptions[layout] || "No description"}
-                            </Typography.Text>
-                        </Space>
-                    ),
-                    disabled: !!sw.layouts[layout],
-                })),
-                onClick: (event) => {
-                    pickLayout(event.key)
-                }
-            }}
-        >
-            <Button>
+        <>
+            <Button
+                variant="outlined"
+                onClick={event => setAnchor(event.currentTarget)}
+            >
                 Add layout
             </Button>
-        </Dropdown>
+            <Menu
+                anchorEl={anchor}
+                open={!!anchor}
+                onClose={() => setAnchor(null)}
+            >
+                {LayoutNames.map(layout => (
+                    <MenuItem
+                        key={layout}
+                        disabled={!!sw.layouts[layout]}
+                        onClick={() => {
+                            setAnchor(null)
+                            pickLayout(layout)
+                        }}
+                    >
+                        <Stack spacing={0.5} sx={{ maxWidth: 200, whiteSpace: 'normal' }}>
+                            <Typography variant="body2" fontWeight="bold">
+                                {layout}
+                            </Typography>
+                            <Typography variant="body2">
+                                {LayoutDescriptions[layout] || "No description"}
+                            </Typography>
+                        </Stack>
+                    </MenuItem>
+                ))}
+            </Menu>
+        </>
     )
 }
 

@@ -127,6 +127,13 @@ components:
     LayoutInstance:
       additionalProperties: false
       properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://example.com/api/schemas/LayoutInstance.json
+          format: uri
+          readOnly: true
+          type: string
         buttons:
           additionalProperties:
             $ref: '#/components/schemas/Command'
@@ -322,6 +329,49 @@ paths:
             application/json:
               schema: {}
           description: OK
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+          description: Internal Server Error
+  /api/switches/{name}/{layout-version}:
+    get:
+      operationId: get-switch
+      parameters:
+        - description: Name of the switch
+          in: path
+          name: name
+          required: true
+          schema:
+            description: Name of the switch
+            type: string
+        - description: Layout version configured on the switch
+          in: path
+          name: layout-version
+          required: true
+          schema:
+            description: Layout version configured on the switch
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayoutInstance'
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+          description: Not Found
         "422":
           content:
             application/problem+json:

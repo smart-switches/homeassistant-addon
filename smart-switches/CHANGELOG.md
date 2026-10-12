@@ -1,3 +1,3 @@
-# v0.0.15
- * [`cebc85f`](https://github.com/smart-switches/homeassistant-addon/commit/cebc85f) Switch to mui (#5)
+# v0.0.16
+ * [`0e5825f`](https://github.com/smart-switches/homeassistant-addon/commit/0e5825f) Add endpoint to fetch a single switch's layout configuration (#6)
 

@@ -16,14 +16,14 @@ build-server:
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash scripts/build-server.sh
-.PHONY: local-build
+.PHONY: build-server
 
 run-server: build-server
 	@cd $(ADDON_ROOT)/local; \
 	\
 	IMAGE_NAME=$(IMAGE_NAME) \
 		bash ../scripts/run-server.sh
-.PHONY: local-run
+.PHONY: run-server
 
 generate-server-spec:
 	@cd $(ADDON_ROOT)/server; \
@@ -51,7 +51,7 @@ generate-server-sdk:
 
 build-site:
 	@cd $(ADDON_ROOT)/site && npm run build
-.PHONY: run-site
+.PHONY: build-site
 
 run-site:
 	@cd $(ADDON_ROOT)/site && npm run develop

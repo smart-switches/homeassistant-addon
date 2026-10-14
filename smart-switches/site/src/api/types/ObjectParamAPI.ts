@@ -23,6 +23,23 @@ export interface DefaultApiGetConfigRequest {
 export interface DefaultApiGetLayoutDefinitionsRequest {
 }
 
+export interface DefaultApiGetSwitchRequest {
+    /**
+     * Name of the switch
+     * Defaults to: undefined
+     * @type string
+     * @memberof DefaultApigetSwitch
+     */
+    name: string
+    /**
+     * Layout version configured on the switch
+     * Defaults to: undefined
+     * @type string
+     * @memberof DefaultApigetSwitch
+     */
+    layout_version: string
+}
+
 export interface DefaultApiListExecutablesRequest {
 }
 
@@ -84,6 +101,20 @@ export class ObjectDefaultApi {
      */
     public getLayoutDefinitions(param: DefaultApiGetLayoutDefinitionsRequest = {}, options?: ConfigurationOptions): Promise<{ [key: string]: LayoutDefinition; }> {
         return this.api.getLayoutDefinitions( options).toPromise();
+    }
+
+    /**
+     * @param param the request object
+     */
+    public getSwitchWithHttpInfo(param: DefaultApiGetSwitchRequest, options?: ConfigurationOptions): Promise<HttpInfo<LayoutInstance>> {
+        return this.api.getSwitchWithHttpInfo(param.name, param.layout_version,  options).toPromise();
+    }
+
+    /**
+     * @param param the request object
+     */
+    public getSwitch(param: DefaultApiGetSwitchRequest, options?: ConfigurationOptions): Promise<LayoutInstance> {
+        return this.api.getSwitch(param.name, param.layout_version,  options).toPromise();
     }
 
     /**

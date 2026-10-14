@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getConfig**](DefaultApi.md#getConfig) | **GET** /api/config | 
 [**getLayoutDefinitions**](DefaultApi.md#getLayoutDefinitions) | **GET** /api/layout-definitions | Get available layout definitions
+[**getSwitch**](DefaultApi.md#getSwitch) | **GET** /api/switches/{name}/{layout-version} | 
 [**listExecutables**](DefaultApi.md#listExecutables) | **GET** /api/executables | 
 [**ping**](DefaultApi.md#ping) | **GET** /api/ping | Validate connectivity to the server
 [**press**](DefaultApi.md#press) | **POST** /api/press | 
@@ -102,6 +103,64 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | OK |  -  |
 **0** | Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **getSwitch**
+> LayoutInstance getSwitch()
+
+
+### Example
+
+
+```typescript
+import { createConfiguration, DefaultApi } from '';
+import type { DefaultApiGetSwitchRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new DefaultApi(configuration);
+
+const request: DefaultApiGetSwitchRequest = {
+    // Name of the switch
+  name: "name_example",
+    // Layout version configured on the switch
+  layout_version: "layout-version_example",
+};
+
+const data = await apiInstance.getSwitch(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | [**string**] | Name of the switch | defaults to undefined
+ **layout_version** | [**string**] | Layout version configured on the switch | defaults to undefined
+
+
+### Return type
+
+**LayoutInstance**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+**404** | Not Found |  -  |
+**422** | Unprocessable Entity |  -  |
+**500** | Internal Server Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 

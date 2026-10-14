@@ -14,6 +14,10 @@ import { Command } from '../models/Command';
 import { HttpFile } from '../http/http';
 
 export class LayoutInstance {
+    /**
+    * A URL to the JSON Schema for this object.
+    */
+    'schema'?: string;
     'buttons': { [key: string]: Command; };
     'flipped': boolean;
     'version': string;
@@ -23,6 +27,12 @@ export class LayoutInstance {
     static readonly mapping: {[index: string]: string} | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+        {
+            "name": "schema",
+            "baseName": "$schema",
+            "type": "string",
+            "format": "uri"
+        },
         {
             "name": "buttons",
             "baseName": "buttons",

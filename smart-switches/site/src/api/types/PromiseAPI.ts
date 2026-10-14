@@ -64,6 +64,26 @@ export class PromiseDefaultApi {
     }
 
     /**
+     * @param name Name of the switch
+     * @param layout_version Layout version configured on the switch
+     */
+    public getSwitchWithHttpInfo(name: string, layout_version: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<LayoutInstance>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSwitchWithHttpInfo(name, layout_version, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * @param name Name of the switch
+     * @param layout_version Layout version configured on the switch
+     */
+    public getSwitch(name: string, layout_version: string, _options?: PromiseConfigurationOptions): Promise<LayoutInstance> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSwitch(name, layout_version, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
      */
     public listExecutablesWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<ListExecutablesResponseBody>> {
         const observableOptions = wrapOptions(_options);

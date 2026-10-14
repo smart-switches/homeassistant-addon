@@ -17,7 +17,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmModal from "../components/modals/confirm";
 import LayoutEditor from "../components/editors/layout";
-import { Config, createConfiguration, DefaultApi, ListExecutablesResponseBody, server1 } from "../api";
+import { Config, createConfiguration, DefaultApi, ListExecutablesResponseBody, server1, ServerConfiguration } from "../api";
 import { fetchLayoutDefinitions } from "../api/convenience";
 
 // Theme tokens, which resolve to the light or dark value based on the active color scheme
@@ -137,7 +137,8 @@ const IndexPage: React.FC<PageProps> = () => {
 
   let [showNewSwitch, setShowNewSwitch] = React.useState(false)
 
-  const api = new DefaultApi(createConfiguration({}))
+  // Relative base URL so API calls resolve under the Home Assistant ingress prefix
+  const api = new DefaultApi(createConfiguration({ baseServer: new ServerConfiguration(".", {}) }))
 
   let sw = currentSwitch ? config?.switches[currentSwitch] : undefined
 

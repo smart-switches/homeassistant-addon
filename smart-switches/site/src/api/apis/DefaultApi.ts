@@ -11,6 +11,7 @@ import {SecurityAuthentication} from '../auth/auth';
 import { Config } from '../models/Config';
 import { ErrorModel } from '../models/ErrorModel';
 import { LayoutDefinition } from '../models/LayoutDefinition';
+import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
 import { PingResponseBody } from '../models/PingResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
@@ -51,6 +52,44 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/layout-definitions';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        
+        const defaultAuth: SecurityAuthentication | undefined = _config?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * @param name Name of the switch
+     * @param layout_version Layout version configured on the switch
+     */
+    public async getSwitch(name: string, layout_version: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'name' is not null or undefined
+        if (name === null || name === undefined) {
+            throw new RequiredError("DefaultApi", "getSwitch", "name");
+        }
+
+
+        // verify required parameter 'layout_version' is not null or undefined
+        if (layout_version === null || layout_version === undefined) {
+            throw new RequiredError("DefaultApi", "getSwitch", "layout_version");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/switches/{name}/{layout-version}'
+            .replace('{name}', encodeURIComponent(String(name)))
+            .replace('{layout-version}', encodeURIComponent(String(layout_version)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -261,6 +300,56 @@ export class DefaultApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "{ [key: string]: LayoutDefinition; }", ""
             ) as { [key: string]: LayoutDefinition; };
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getSwitch
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getSwitchWithHttpInfo(response: ResponseContext): Promise<HttpInfo<LayoutInstance >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: LayoutInstance = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "LayoutInstance", ""
+            ) as LayoutInstance;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+        if (isCodeInRange("404", response.httpStatusCode)) {
+            const body: ErrorModel = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorModel", ""
+            ) as ErrorModel;
+            throw new ApiException<ErrorModel>(response.httpStatusCode, "Not Found", body, response.headers);
+        }
+        if (isCodeInRange("422", response.httpStatusCode)) {
+            const body: ErrorModel = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorModel", ""
+            ) as ErrorModel;
+            throw new ApiException<ErrorModel>(response.httpStatusCode, "Unprocessable Entity", body, response.headers);
+        }
+        if (isCodeInRange("500", response.httpStatusCode)) {
+            const body: ErrorModel = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorModel", ""
+            ) as ErrorModel;
+            throw new ApiException<ErrorModel>(response.httpStatusCode, "Internal Server Error", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: LayoutInstance = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "LayoutInstance", ""
+            ) as LayoutInstance;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

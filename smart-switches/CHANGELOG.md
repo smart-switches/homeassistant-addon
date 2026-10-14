@@ -1,3 +1,3 @@
-# v0.0.16
- * [`0e5825f`](https://github.com/smart-switches/homeassistant-addon/commit/0e5825f) Add endpoint to fetch a single switch's layout configuration (#6)
+# v0.0.17
+ * [`092bdb7`](https://github.com/smart-switches/homeassistant-addon/commit/092bdb7) Enable ingress sidebar panel (#7)
 

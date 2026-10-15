@@ -1,7 +1,9 @@
 import type { GatsbyConfig } from "gatsby"
 
 const config: GatsbyConfig = {
-  pathPrefix: './',
+  // Placeholder, replaced at serve time with the Home Assistant ingress path
+  // (see server/api/site.go). Requires building with --prefix-paths.
+  pathPrefix: '/__INGRESS_PREFIX__',
   proxy: [
     {
       prefix: '/api',

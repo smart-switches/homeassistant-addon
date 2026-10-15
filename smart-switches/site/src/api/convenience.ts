@@ -1,7 +1,6 @@
 import { LayoutInstance } from "./models/LayoutInstance"
 import { LayoutDefinition } from "./models/LayoutDefinition"
-import { DefaultApi } from "./index"
-import { createConfiguration } from "./configuration"
+import { createApi } from "../apiClient"
 
 // These will be populated by calling fetchLayoutDefinitions()
 export let ButtonsByLayout: Record<string, string[]> = {};
@@ -19,7 +18,7 @@ export async function fetchLayoutDefinitions(): Promise<{ [key: string]: LayoutD
         return layoutDefinitionsCache;
     }
 
-    const api = new DefaultApi(createConfiguration());
+    const api = createApi();
     const definitions = await api.getLayoutDefinitions();
 
     layoutDefinitionsCache = definitions;

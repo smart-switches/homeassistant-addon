@@ -1,3 +1,3 @@
-# v0.0.17
- * [`092bdb7`](https://github.com/smart-switches/homeassistant-addon/commit/092bdb7) Enable ingress sidebar panel (#7)
+# v0.0.18
+ * [`fba5da2`](https://github.com/smart-switches/homeassistant-addon/commit/fba5da2) Fix site assets and API calls under Home Assistant ingress (#8)
 

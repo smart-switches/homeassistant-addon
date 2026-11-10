@@ -7,10 +7,15 @@ import { Config } from '../models/Config';
 import { ErrorDetail } from '../models/ErrorDetail';
 import { ErrorModel } from '../models/ErrorModel';
 import { Executable } from '../models/Executable';
+import { GetLogsResponseBody } from '../models/GetLogsResponseBody';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { LogEntry } from '../models/LogEntry';
+import { LogEntryReq } from '../models/LogEntryReq';
 import { PingResponseBody } from '../models/PingResponseBody';
+import { PostLogsRequestBody } from '../models/PostLogsRequestBody';
+import { PostLogsResponseBody } from '../models/PostLogsResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -21,6 +26,16 @@ export interface DefaultApiGetConfigRequest {
 }
 
 export interface DefaultApiGetLayoutDefinitionsRequest {
+}
+
+export interface DefaultApiGetLogsRequest {
+    /**
+     * Name of the switch to fetch logs for
+     * Defaults to: undefined
+     * @type string
+     * @memberof DefaultApigetLogs
+     */
+    _switch: string
 }
 
 export interface DefaultApiGetSwitchRequest {
@@ -44,6 +59,15 @@ export interface DefaultApiListExecutablesRequest {
 }
 
 export interface DefaultApiPingRequest {
+}
+
+export interface DefaultApiPostLogsRequest {
+    /**
+     * 
+     * @type PostLogsRequestBody
+     * @memberof DefaultApipostLogs
+     */
+    PostLogsRequestBody: PostLogsRequestBody
 }
 
 export interface DefaultApiPressRequest {
@@ -104,6 +128,22 @@ export class ObjectDefaultApi {
     }
 
     /**
+     * Fetch the stored log entries for a switch
+     * @param param the request object
+     */
+    public getLogsWithHttpInfo(param: DefaultApiGetLogsRequest, options?: ConfigurationOptions): Promise<HttpInfo<GetLogsResponseBody>> {
+        return this.api.getLogsWithHttpInfo(param._switch,  options).toPromise();
+    }
+
+    /**
+     * Fetch the stored log entries for a switch
+     * @param param the request object
+     */
+    public getLogs(param: DefaultApiGetLogsRequest, options?: ConfigurationOptions): Promise<GetLogsResponseBody> {
+        return this.api.getLogs(param._switch,  options).toPromise();
+    }
+
+    /**
      * @param param the request object
      */
     public getSwitchWithHttpInfo(param: DefaultApiGetSwitchRequest, options?: ConfigurationOptions): Promise<HttpInfo<LayoutInstance>> {
@@ -145,6 +185,24 @@ export class ObjectDefaultApi {
      */
     public ping(param: DefaultApiPingRequest = {}, options?: ConfigurationOptions): Promise<PingResponseBody> {
         return this.api.ping( options).toPromise();
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param param the request object
+     */
+    public postLogsWithHttpInfo(param: DefaultApiPostLogsRequest, options?: ConfigurationOptions): Promise<HttpInfo<PostLogsResponseBody>> {
+        return this.api.postLogsWithHttpInfo(param.PostLogsRequestBody,  options).toPromise();
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param param the request object
+     */
+    public postLogs(param: DefaultApiPostLogsRequest, options?: ConfigurationOptions): Promise<PostLogsResponseBody> {
+        return this.api.postLogs(param.PostLogsRequestBody,  options).toPromise();
     }
 
     /**

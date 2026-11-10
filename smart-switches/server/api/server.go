@@ -16,6 +16,7 @@ import (
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/api/middleware"
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/config"
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/homeassistant"
+	"github.com/lucaspopp0/ha-smart-switches/smart-switches/logstore"
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/model"
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/util"
 )
@@ -35,6 +36,8 @@ type server struct {
 
 	mCfg sync.Mutex
 	cfg  config.Config
+
+	logs *logstore.Store
 
 	mExecutables sync.Mutex
 	executables  homeassistant.Executables
@@ -96,6 +99,8 @@ func NewServer() humacli.CLI {
 		s.ha = homeassistant.NewAPI(homeassistant.APIConfig{
 			SupervisorToken: supervisorToken,
 		})
+
+		s.logs = logstore.New(logstore.DefaultDir(), logstore.DefaultMaxEntries)
 
 		// Create a new router & API.
 		s.router = chi.NewMux()

@@ -3,10 +3,15 @@ export * from '../models/Config';
 export * from '../models/ErrorDetail';
 export * from '../models/ErrorModel';
 export * from '../models/Executable';
+export * from '../models/GetLogsResponseBody';
 export * from '../models/LayoutDefinition';
 export * from '../models/LayoutInstance';
 export * from '../models/ListExecutablesResponseBody';
+export * from '../models/LogEntry';
+export * from '../models/LogEntryReq';
 export * from '../models/PingResponseBody';
+export * from '../models/PostLogsRequestBody';
+export * from '../models/PostLogsResponseBody';
 export * from '../models/PostPressRequestBody';
 export * from '../models/Switch';
 
@@ -15,10 +20,15 @@ import { Config } from '../models/Config';
 import { ErrorDetail } from '../models/ErrorDetail';
 import { ErrorModel } from '../models/ErrorModel';
 import { Executable } from '../models/Executable';
+import { GetLogsResponseBody } from '../models/GetLogsResponseBody';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { LogEntry } from '../models/LogEntry';
+import { LogEntryReq } from '../models/LogEntryReq';
 import { PingResponseBody } from '../models/PingResponseBody';
+import { PostLogsRequestBody } from '../models/PostLogsRequestBody';
+import { PostLogsResponseBody } from '../models/PostLogsResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -43,10 +53,15 @@ let typeMap: {[index: string]: any} = {
     "ErrorDetail": ErrorDetail,
     "ErrorModel": ErrorModel,
     "Executable": Executable,
+    "GetLogsResponseBody": GetLogsResponseBody,
     "LayoutDefinition": LayoutDefinition,
     "LayoutInstance": LayoutInstance,
     "ListExecutablesResponseBody": ListExecutablesResponseBody,
+    "LogEntry": LogEntry,
+    "LogEntryReq": LogEntryReq,
     "PingResponseBody": PingResponseBody,
+    "PostLogsRequestBody": PostLogsRequestBody,
+    "PostLogsResponseBody": PostLogsResponseBody,
     "PostPressRequestBody": PostPressRequestBody,
     "Switch": Switch,
 }

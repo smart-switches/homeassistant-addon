@@ -12,6 +12,12 @@ import (
 	"github.com/lucaspopp0/ha-smart-switches/smart-switches/util"
 )
 
+// Operations whose request bodies are bulky and routine, and so shouldn't be
+// echoed to the add-on log when a request fails.
+var quietRequestBodies = map[string]bool{
+	"postLogs": true,
+}
+
 func Logger(ctx huma.Context, next func(huma.Context)) {
 	fmt.Printf("incoming %s %s request\n", ctx.Method(), ctx.Operation().OperationID)
 
@@ -42,7 +48,7 @@ func Logger(ctx huma.Context, next func(huma.Context)) {
 
 	if logger.status >= 400 {
 		// Log request body on error
-		if len(logger.requestBody) > 0 {
+		if len(logger.requestBody) > 0 && !quietRequestBodies[ctx.Operation().OperationID] {
 			fmt.Printf("request body: %s\n", string(logger.requestBody))
 		}
 

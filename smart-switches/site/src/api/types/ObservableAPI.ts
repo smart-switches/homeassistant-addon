@@ -8,10 +8,15 @@ import { Config } from '../models/Config';
 import { ErrorDetail } from '../models/ErrorDetail';
 import { ErrorModel } from '../models/ErrorModel';
 import { Executable } from '../models/Executable';
+import { GetLogsResponseBody } from '../models/GetLogsResponseBody';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { LogEntry } from '../models/LogEntry';
+import { LogEntryReq } from '../models/LogEntryReq';
 import { PingResponseBody } from '../models/PingResponseBody';
+import { PostLogsRequestBody } from '../models/PostLogsRequestBody';
+import { PostLogsResponseBody } from '../models/PostLogsResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 
@@ -89,6 +94,38 @@ export class ObservableDefaultApi {
      */
     public getLayoutDefinitions(_options?: ConfigurationOptions): Observable<{ [key: string]: LayoutDefinition; }> {
         return this.getLayoutDefinitionsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<{ [key: string]: LayoutDefinition; }>) => apiResponse.data));
+    }
+
+    /**
+     * Fetch the stored log entries for a switch
+     * @param _switch Name of the switch to fetch logs for
+     */
+    public getLogsWithHttpInfo(_switch: string, _options?: ConfigurationOptions): Observable<HttpInfo<GetLogsResponseBody>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.getLogs(_switch, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getLogsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Fetch the stored log entries for a switch
+     * @param _switch Name of the switch to fetch logs for
+     */
+    public getLogs(_switch: string, _options?: ConfigurationOptions): Observable<GetLogsResponseBody> {
+        return this.getLogsWithHttpInfo(_switch, _options).pipe(map((apiResponse: HttpInfo<GetLogsResponseBody>) => apiResponse.data));
     }
 
     /**
@@ -179,6 +216,40 @@ export class ObservableDefaultApi {
      */
     public ping(_options?: ConfigurationOptions): Observable<PingResponseBody> {
         return this.pingWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<PingResponseBody>) => apiResponse.data));
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param PostLogsRequestBody
+     */
+    public postLogsWithHttpInfo(PostLogsRequestBody: PostLogsRequestBody, _options?: ConfigurationOptions): Observable<HttpInfo<PostLogsResponseBody>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.postLogs(PostLogsRequestBody, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.postLogsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param PostLogsRequestBody
+     */
+    public postLogs(PostLogsRequestBody: PostLogsRequestBody, _options?: ConfigurationOptions): Observable<PostLogsResponseBody> {
+        return this.postLogsWithHttpInfo(PostLogsRequestBody, _options).pipe(map((apiResponse: HttpInfo<PostLogsResponseBody>) => apiResponse.data));
     }
 
     /**

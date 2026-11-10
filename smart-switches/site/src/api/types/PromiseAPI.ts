@@ -7,10 +7,15 @@ import { Config } from '../models/Config';
 import { ErrorDetail } from '../models/ErrorDetail';
 import { ErrorModel } from '../models/ErrorModel';
 import { Executable } from '../models/Executable';
+import { GetLogsResponseBody } from '../models/GetLogsResponseBody';
 import { LayoutDefinition } from '../models/LayoutDefinition';
 import { LayoutInstance } from '../models/LayoutInstance';
 import { ListExecutablesResponseBody } from '../models/ListExecutablesResponseBody';
+import { LogEntry } from '../models/LogEntry';
+import { LogEntryReq } from '../models/LogEntryReq';
 import { PingResponseBody } from '../models/PingResponseBody';
+import { PostLogsRequestBody } from '../models/PostLogsRequestBody';
+import { PostLogsResponseBody } from '../models/PostLogsResponseBody';
 import { PostPressRequestBody } from '../models/PostPressRequestBody';
 import { Switch } from '../models/Switch';
 import { ObservableDefaultApi } from './ObservableAPI';
@@ -60,6 +65,26 @@ export class PromiseDefaultApi {
     public getLayoutDefinitions(_options?: PromiseConfigurationOptions): Promise<{ [key: string]: LayoutDefinition; }> {
         const observableOptions = wrapOptions(_options);
         const result = this.api.getLayoutDefinitions(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Fetch the stored log entries for a switch
+     * @param _switch Name of the switch to fetch logs for
+     */
+    public getLogsWithHttpInfo(_switch: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<GetLogsResponseBody>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getLogsWithHttpInfo(_switch, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Fetch the stored log entries for a switch
+     * @param _switch Name of the switch to fetch logs for
+     */
+    public getLogs(_switch: string, _options?: PromiseConfigurationOptions): Promise<GetLogsResponseBody> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getLogs(_switch, observableOptions);
         return result.toPromise();
     }
 
@@ -114,6 +139,28 @@ export class PromiseDefaultApi {
     public ping(_options?: PromiseConfigurationOptions): Promise<PingResponseBody> {
         const observableOptions = wrapOptions(_options);
         const result = this.api.ping(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param PostLogsRequestBody
+     */
+    public postLogsWithHttpInfo(PostLogsRequestBody: PostLogsRequestBody, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PostLogsResponseBody>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.postLogsWithHttpInfo(PostLogsRequestBody, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Entries already stored are ignored, so a switch can safely resend entries it hasn\'t had acknowledged.
+     * Upload log entries from a switch
+     * @param PostLogsRequestBody
+     */
+    public postLogs(PostLogsRequestBody: PostLogsRequestBody, _options?: PromiseConfigurationOptions): Promise<PostLogsResponseBody> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.postLogs(PostLogsRequestBody, observableOptions);
         return result.toPromise();
     }
 

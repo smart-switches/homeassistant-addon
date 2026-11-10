@@ -1,5 +1,6 @@
 .gitattributes
 .gitignore
+.openapi-generator-ignore
 README.md
 apis/DefaultApi.ts
 apis/baseapi.ts
@@ -17,11 +18,16 @@ models/Config.ts
 models/ErrorDetail.ts
 models/ErrorModel.ts
 models/Executable.ts
+models/GetLogsResponseBody.ts
 models/LayoutDefinition.ts
 models/LayoutInstance.ts
 models/ListExecutablesResponseBody.ts
+models/LogEntry.ts
+models/LogEntryReq.ts
 models/ObjectSerializer.ts
 models/PingResponseBody.ts
+models/PostLogsRequestBody.ts
+models/PostLogsResponseBody.ts
 models/PostPressRequestBody.ts
 models/Switch.ts
 models/all.ts
